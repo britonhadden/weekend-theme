@@ -55,5 +55,44 @@ if (! function_exists("weekend_render_block") ):
   }
 endif;
 
+/**
+ * THIS OVERRIDES A FUNCTION FROM THE PARENT THEME: It's a lot of code duplication (sucks, I know), but we need to use a different thumbnail size
+ * Returns a div with the post's featured image and associated metadata (e.g. caption, authors..)
+ * meant to be used within the loop. uses global $post
+ */
+if (! function_exists( 'ydn_get_featured_image') ):
+function ydn_get_featured_image() {
+  global $post;
+  if(  has_post_thumbnail() ):
+    $featured_image_id = get_post_thumbnail_id( $post->ID );
+    $featured_image_obj = get_posts( array( 'numberposts' => 1,
+                                            'include' => $featured_image_id,
+                                            'post_type' => 'attachment',
+                                            'post_parent' => $post->ID ) );
+    if ( is_array($featured_image_obj) && !empty($featured_image_obj) ) {
+      $featured_image_obj = $featured_image_obj[0];
+    }
+
+    ?>
+    <div class="entry-featured-image">
+      <?php  the_post_thumbnail('weekend-entry-featured-image'); ?>
+      <?php if($featured_image_obj): ?>
+        <div class="image-meta">
+          <?php if( $featured_image_obj->post_excerpt): ?>
+            <span class="caption"> <?php echo esc_html( $featured_image_obj->post_excerpt ); ?> </span> 
+          <?php endif; ?>
+          <?php
+            $attribution_text = get_media_credit_html($featured_image_obj);
+            if(trim($attribution_text) != ''  ): ?>
+              <span class="attribution">// <?php echo $attribution_text; ?></span>
+          <?php endif; ?>
+        </div>
+      <?php endif; //end featured_image_obj check ?>
+    </div>
+    <?php endif; //end has_post_thumbnail condition
+}
+endif; // end function_exists condition
+
+
 
 ?>

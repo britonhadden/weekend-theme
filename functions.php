@@ -12,6 +12,7 @@ function weekend_setup() {
   /**
    * Register the thumbnail sizes for the weekend grid 
    */
+  add_image_size('weekend-entry-featured-image',590,99999999999);
   add_image_size('weekend-small',270,150,true);
   add_image_size('weekend-medium',320,225,true);
   add_image_size('weekend-big',550,396,true);
